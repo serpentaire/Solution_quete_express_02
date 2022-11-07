@@ -28,9 +28,26 @@ const movies = [
   },
 ];
 
+// ---utilisation du GET------
 const getMovies = (req, res) => {
+  let sql = "select * from movies";
+  const sqlValues = [];
+
+  if (req.query.color != null) {
+    sql += " where color = ?";
+    sqlValues.push(req.query.color);
+  
+    if (req.query.max_duration != null) {
+      sql += " and duration <= ?";
+      sqlValues.push(req.query.max_duration);
+    }
+  } else if (req.query.max_duration != null) {
+    sql += " where duration <= ?";
+    sqlValues.push(req.query.max_duration);
+  }
+
   database
-    .query("select * from movies")
+    .query(sql, sqlValues)
     .then(([movies]) => {
       res.json(movies);
     })
@@ -40,6 +57,7 @@ const getMovies = (req, res) => {
     });
 };
 
+// ---utilisation du GET sur un Id-----
 const getMovieById = (req, res) => {
   const id = parseInt(req.params.id);
 
@@ -58,6 +76,7 @@ const getMovieById = (req, res) => {
   });
 };
 
+// -----Utilisation de INSERT pour ajouter des données----
 const postMovie = (req, res) => {
   const { title, director, year, color, duration } = req.body;
   database
@@ -74,6 +93,7 @@ const postMovie = (req, res) => {
     });
 };
 
+// -----utilisation du UPDATE pour modifier une données-----
 const updateMovie = (req, res) => {
   const id = parseInt(req.params.id);
   const { title, director, year, color, duration } = req.body;
@@ -96,6 +116,8 @@ const updateMovie = (req, res) => {
     });
 };
 
+
+// -----Utilisation du DELETE pour supprimer une donnée-----
 const deleteMovie = (req, res) => {
   const id = parseInt(req.params.id);
 
