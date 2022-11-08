@@ -96,12 +96,11 @@ const postMovie = (req, res) => {
 // -----utilisation du UPDATE pour modifier une données-----
 const updateMovie = (req, res) => {
   const id = parseInt(req.params.id);
-  const { title, director, year, color, duration } = req.body;
 
   database
     .query(
-      "update movies set title = ?, director = ?, year = ?, color = ?, duration = ? where id = ?",
-      [title, director, year, color, duration, id]
+      "UPDATE movies SET ? WHERE id = ?",
+      [req.body, id]
     )
     .then(([result]) => {
       if (result.affectedRows === 0) {
